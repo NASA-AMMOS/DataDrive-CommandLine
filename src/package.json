@@ -1,0 +1,144 @@
+{
+  "name": "ddrv_cli",
+  "description": "DataDrive Command Line Interface clients",
+  "main": "ddrv.js",
+  "engines": {
+    "node": "~14.15.0"
+  },
+  "dependencies": {
+    "@gov.nasa.jpl.m2020.cs3/ocs-js-client": "~7.6.0",
+    "axios": "~0.18.1",
+    "axios-debug": "0.0.4",
+    "bluebird": "^3.5.2",
+    "chai": "~4.2.0",
+    "chokidar": "~2.1.5",
+    "commander": "~2.20.0",
+    "cookie": "~0.3.1",
+    "dotenv": "~7.0.0",
+    "easy-table": "~1.1.1",
+    "form-data": "~2.5.0",
+    "fs-extra": "~8.1.0",
+    "glob-to-regexp": "~0.4.1",
+    "jsonschema": "~1.2.4",
+    "lodash": "~4.17.15",
+    "mocha": "~6.2.0",
+    "moment": "~2.24.0",
+    "pkg": "^5.1.0",
+    "request": "~2.88.2",
+    "shelljs": "~0.8.3",
+    "upath": "~1.1.2",
+    "winston": "~3.2.1",
+    "ws": "~6.2.1"
+  },
+  "devDependencies": {
+    "@semantic-release/commit-analyzer": "^6.3.0",
+    "@semantic-release/exec": "^3.3.6",
+    "@semantic-release/npm": "^5.1.15",
+    "@semantic-release/git": "^7.0.16",
+    "@semantic-release/github": "^5.4.3",
+    "@semantic-release/release-notes-generator": "^7.3.0",
+    "conventional-changelog-eslint": "^3.0.1",
+    "@semantic-release/changelog": "^3.0.4",
+    "semantic-release": "^15.13.24"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "bin": {
+    "ddrv": "ddrv.js"
+  },
+  "pkg": {
+    "scripts": [
+      "ddrv-*.js",
+      "core/*.js"
+    ]
+  },
+  "scripts": {
+    "test": "mocha --exclude test/dd-package-subscribe-test.js --exclude test/dd-checkpoint.js --exclude test/dd-checkpoint.js",
+    "test-queue": "mocha --grep DdQueue",
+    "test-util": "mocha --grep DdUtils",
+    "test-checkpoint": "mocha --grep checkpoint",
+    "build": "node buildScript.js --build",
+    "clean": "node buildScript.js --clean",
+    "package": "node buildScript.js --deploy",
+    "semantic-release": "npx semantic-release",
+    "semantic-release-dry-run": "npx semantic-release --dry-run"
+  },
+  "release": {
+    "branch": "master",
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "angular",
+          "releaseRules": [
+            {
+              "type": "patch",
+              "release": "patch"
+            },
+            {
+              "type": "minor",
+              "release": "minor"
+            },
+            {
+              "type": "major",
+              "release": "major"
+            }
+          ]
+        }
+      ],
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "CHANGELOG.md"
+        }
+      ],
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "npm run package",
+          "successCmd": "printf ${nextRelease.version} > release.txt"
+        }
+      ],
+      "@semantic-release/git",
+      {
+        "assets": [
+          "CHANGELOG.md",
+          "package.json",
+          "package-lock.json"
+        ],
+        "message": "chore: ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      },
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            {
+              "path": "../deployment/dist/ddrv-cli-bundle.zip"
+            }
+          ],
+          "successComment": false,
+          "failComment": false,
+          "fileTitle": false,
+          "label": false
+        }
+      ]
+    ]
+  },
+  "keywords": [
+    "datadrive",
+    "subscription",
+    "OCS",
+    "subscribe"
+  ],
+  "author": "Nicholas Toole",
+  "license": "UNLICENSED",
+  "version": "1.7.3"
+}

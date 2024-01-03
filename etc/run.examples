@@ -1,0 +1,2 @@
+node ddrv-publish.js -p DataDrive-Dev-Congruent-1 -s sourceDir
+node dd-package-publish.js -p DataDrive-Experiment-1 -s C:\temp\datadrive_git_repos\ddcli_110818\publish_bucket\

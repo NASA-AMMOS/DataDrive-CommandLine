@@ -1,0 +1,21 @@
+First example:
+{
+"package_id": "H1OFOQyZ7",
+"dataset_id": "test",
+"ocs_full_name": "test",
+"ocs_url": "test",
+"event_type": "OBJ_REMOVED_DELETED",
+"user": "test",
+"event_time": "test"
+}
+
+Sample file:
+{
+"package_id": "H1OFOQyZ7",
+"dataset_id": "test",
+"ocs_full_name": "test",
+"ocs_url": "test",
+"event_type": "OBJ_INDEXED",
+"user": "test",
+"event_time": "test"
+}
