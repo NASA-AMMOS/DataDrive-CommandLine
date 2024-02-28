@@ -5,7 +5,7 @@ This project will provide command line applications to interface with Datadrive/
 
 ## Installation
 ### From Github Release
-Please visit https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/releases to get the latest and past releases. Each zip contains binaries for Linux, Windows and OSX.
+Please visit [https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/releases](https://github.com/NASA-AMMOS/DataDrive-CommandLine/releases) to get the latest and past releases. Each zip contains binaries for Linux, Windows and OSX.
 
 ### From Source
 #### Prerequisites
