@@ -69,7 +69,7 @@ Instead of defining a `ocs_package_name` with the `-p` flag, you can subscribe t
 You can run a single script that will be called for every notification.
 - Ex: `./ddrv subscribe -p [ocs_package_name] -o [output_directory_path_here] -r -x [regex_filter] --plugin-path [path_to_script]`
 - `--plugin-path` flag's value should be an absolute path to your script.
-- Please reference <https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/tree/master/src/plugin_examples> for examples scripts that you can take inspiration from.
+- Please reference the `src/plugin_examples` folder for examples scripts that you can take inspiration from.
 - You must inherit from `DdPlugin` class and implement `processItem` function.
 
 ### Playback events
