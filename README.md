@@ -19,12 +19,12 @@ Please visit https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/releases to 
 - Built binary will be located in `[cloned_folder]/deployment/dist`
 
 ## Getting Started
-Now that the DataDrive CLI has been installed, please log into CSSO using the CSSO CLI via the command `csso_login`. This can be downloaded from the [csso_login](https://github.jpl.nasa.gov/M2020-CS3/csso_login/releases) Github repository. Installation instructions are also included in link above. Note: Please run `csso_login` from the extracted folder if you did not put `csso_login` into your system PATH. 
+Now that the DataDrive CLI has been installed, please log into CSSO using the CREDSS CLI via the command `credss`. This can be downloaded from the [credss](https://github.jpl.nasa.gov/CS3/credss/releases) Github repository. Installation instructions are also included in link above. Note: Please run `credss` from the extracted folder if you did not put `credss` into your system PATH. 
 
 ### Configure CLI
 To configure the CLI, please run the following command:
 - `./ddrv config -d [datadrive_middleware_hostname] -p [pep_hostname]`
-- Ex: `./ddrv config -d datadrive-middle-dev.dev.m20.jpl.nasa.gov -p data.dev.m20.jpl.nasa.gov`
+- Ex: `./ddrv config -d dd-dev.dev.m20.jpl.nasa.gov/ddmw -p data.dev.m20.jpl.nasa.gov`
 The command above will create a configuration JSON file in `~/.datadrive/datadrive.json`. Note: You should only need to run this once unless `~/.datadrive/datadrive.json` file is deleted.
 
 ### Basic Subscriptions
