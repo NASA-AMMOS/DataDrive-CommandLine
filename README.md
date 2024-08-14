@@ -56,7 +56,8 @@ If you are a developer or want to make changes, or try an unreleased development
 To configure the CLI, please run the following command:
 
 -   `ddrv config --help` will show the help screen and available options
--   The basic required configuration is the Datadrive Middleware server and the PEP server, ex: `./ddrv config -d [datadrive_middleware_hostname] -p [pep_hostname]`
+-   The basic required configuration is the Datadrive Middleware server and the PEP server, 
+-   ex: `./ddrv config -d [datadrive_middleware_hostname] -p [pep_hostname]`
 -   Other typical options include a custom log path and the time interval to roll the log files: `./ddrv config --dd-host datadrive-middle-dev.dev.m20.jpl.nasa.gov --pep-host data.dev.m20.jpl.nasa.gov --logdir log_output_folder --log-date-pattern daily`
     
     The command above will create a configuration JSON file in `~/.datadrive/datadrive.json`. Note: You should only need to run this once unless `~/.datadrive/datadrive.json` file is deleted or you are using the ddrv CLI with multiple environments.
@@ -136,7 +137,7 @@ You can run a single script that will be called for every notification.
 
 -   Ex: `./ddrv subscribe -p [ocs_package_name] -o [output_directory_path_here] -r -x [regex_filter] --plugin-path [path_to_script]`
 -   `--plugin-path` flag's value should be an absolute path to your script.
--   Please reference <https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/tree/master/src/plugin_examples> for example scripts that you can take inspiration from.
+-   Please the `src/plugin_examples` folder for example scripts that you can take inspiration from.
 -   You must inherit from `DdPlugin` class and implement `processItem` function.
 
 ## Unit Test
