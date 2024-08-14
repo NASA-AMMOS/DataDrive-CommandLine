@@ -1,15 +1,15 @@
-'use strict';
+"use strict";
 
-const DdPackageJSON = require('../package.json');
+const DdPackageJSON = require("../package.json");
 
-const CLIENT_NAME = 'DataDrive CLI';
+const CLIENT_NAME = "DataDrive CLI";
 const CLIENT_VERSION = DdPackageJSON.version;
 const CLIENT_TITLE = CLIENT_NAME + " " + CLIENT_VERSION;
 
 //Event types from the OCS object event emitted
-const OCS_EVENTYPE_OBJECT_INDEXED = 'OBJ_INDEXED';
-const OCS_EVENTYPE_OBJECT_REMOVED = 'OBJ_REMOVED_FROM_INDEX';
-const OCS_EVENTYPE_OBJECT_DELETED = 'OBJ_REMOVED_DELETED';
+const OCS_EVENTYPE_OBJECT_INDEXED = "OBJ_INDEXED";
+const OCS_EVENTYPE_OBJECT_REMOVED = "OBJ_REMOVED_FROM_INDEX";
+const OCS_EVENTYPE_OBJECT_DELETED = "OBJ_REMOVED_DELETED";
 
 //OCS Package metadata field names
 const OCS_PACKAGE_NAME = "name";
@@ -19,38 +19,48 @@ const OCS_PACKAGE_DESCRIPTION = "description";
 //const DATADRIVE_HOST = "https://datadrive-mid-exp.m20-dev.jpl.nasa.gov/";
 
 //Our Environment...er...Json file will be located
-const CFG_FILEDIR           = ".datadrive";
-const CFG_FILENAME          = "datadrive.json";
-
+const CFG_FILEDIR = ".datadrive";
+const CFG_FILENAME = "datadrive.json";
 
 //OCS's versions of where their environment file will be located
-const OCS_CFG_FILEDIR           = ".ocs";
-const OCS_CFG_FILENAME          = "ocs.json";
+const OCS_CFG_FILEDIR = ".ocs";
+const OCS_CFG_FILENAME = "ocs.json";
 
 //Data drive configuration
-const PROP_DATADRIVE_HOST  = "datadriveHost";
-const ENV_DATADRIVE_HOST   = "DATADRIVEHOST";
-const PROP_PEP_HOST        = "pepHost";
-const ENV_PEP_HOST         = "PEPHOST";
-const PROP_DEBUG_ENABLED   = "debugEnabled";
-const ENV_DEBUG_ENABLED    = "DEBUG";
+const PROP_DATADRIVE_HOST = "datadriveHost";
+const ENV_DATADRIVE_HOST = "DATADRIVEHOST";
+const PROP_PEP_HOST = "pepHost";
+const ENV_PEP_HOST = "PEPHOST";
+const PROP_DEBUG_ENABLED = "debugEnabled";
+const ENV_DEBUG_ENABLED = "DEBUG";
 
-const DEFAULT_DD_HOST        = 'datadrive-mid.m20-dev.jpl.nasa.gov';
-const DEFAULT_PEP_HOST       = 'data.m20-dev.jpl.nasa.gov';
-
+const DEFAULT_DD_HOST = "datadrive-mid.m20-dev.jpl.nasa.gov";
+const DEFAULT_PEP_HOST = "data.m20-dev.jpl.nasa.gov";
+const DEFAULT_LOG_PATH = "./";
+const DEFAULT_VENUE = "M20";
 
 //OCS configuration
-const PROP_OCS_HOST           = "ocsEndpointHost";
+const PROP_OCS_HOST = "ocsEndpointHost";
 const PROP_OCS_API_DEPLOYMENT = "ocsApiStage";
 
 //Event types... either OCS or PLAYBACK
-const EVENTTYPE_OCS = 'OCS';
-const EVENTTYPE_PLAYBACK = 'PLAYBACK';
+const EVENTTYPE_OCS = "OCS";
+const EVENTTYPE_PLAYBACK = "PLAYBACK";
 
 //S3 related constants
-const S3_PROTOCOL = 's3://';
-const S3_URL_PATTERN = '^s3://([^/]+)/(.*?([^/]+))$';
+const S3_PROTOCOL = "s3://";
+const S3_URL_PATTERN = "^s3://([^/]+)/(.*?([^/]+))$";
 const S3_URL_REGEX = new RegExp(S3_URL_PATTERN);
+
+const SSO_SESSION_KEY_LOOKUP = {
+    M20: "ssosession",
+    MGSS: "mdmsSsoToken",
+};
+
+const SSO_KEY_LOOKUP = {
+    M20: "csso",
+    MGSS: "sso",
+};
 
 // This is for debug on nttooles Mac running middleware locally
 //const DATADRIVE_HOST = "https://wphyo-mac.m20-dev.jpl.nasa.gov:8085";
@@ -82,6 +92,10 @@ module.exports = {
     EVENTTYPE_PLAYBACK,
     S3_PROTOCOL,
     S3_URL_PATTERN,
-    S3_URL_REGEX
+    S3_URL_REGEX,
+    DEFAULT_LOG_PATH,
+    SSO_SESSION_KEY_LOOKUP,
+    DEFAULT_VENUE,
+    SSO_KEY_LOOKUP,
     //DATADRIVE_HOST
 };

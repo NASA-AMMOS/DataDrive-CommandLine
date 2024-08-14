@@ -484,7 +484,7 @@ let utils = (function () {
         }
         const options = {
             method: 'POST',
-            url: `${config.dataDriveHost}/api/playback/v2`,
+            url: `${config.datadriveHost}/api/playback/v2`,
             headers: {
                 'Content-Type': 'application/json',
                 Cookie: `ssosession=${config.cssoToken}`
@@ -511,7 +511,7 @@ let utils = (function () {
         }; // currently we will only query for personnel saved searches
         const options = {
             method: 'POST',
-            url: `${config.dataDriveHost}/api/ss/playback/v2`,
+            url: `${config.datadriveHost}/api/ss/playback/v2`,
             headers: {
                 'Content-Type': 'application/json',
                 Cookie: `ssosession=${config.cssoToken}`
@@ -541,10 +541,10 @@ let utils = (function () {
     utils.getSavedSearch = async function(ss_type, name, owner, config) {
         let url;
         if (ss_type === "general") {
-            url = `${config.dataDriveHost}/api/saved_search/get/${owner}/${name}`;
+            url = `${config.datadriveHost}/api/saved_search/get/${owner}/${name}`;
         }
         else {
-            url = `${config.dataDriveHost}/api/saved_search/get/${name}`;
+            url = `${config.datadriveHost}/api/saved_search/get/${name}`;
         }
         return this.executeDdRequest(url, "GET", null, config.cssoToken);
     }

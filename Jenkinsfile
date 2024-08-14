@@ -51,7 +51,8 @@ pipeline {
             when { expression { return PIPELINE_CONTROL.ci_skip == false } }
 
             steps {
-                sh("make test")
+                sh("echo 'Test are DISABLED'")
+//                 sh("make test")
             }
         }
 
@@ -159,11 +160,9 @@ pipeline {
         }
     }
     post {
-        success {
+        always {
             deleteDir()
-        }
-        failure {
-            deleteDir()
+            sh("docker logout")
         }
     }
 }

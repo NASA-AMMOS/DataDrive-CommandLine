@@ -17,7 +17,7 @@ const init = () => {
     ctxt.s3Bucket = "testtest";
     ctxt.pkgName = "DataDrive-Dev-1";
     ctxt.file_name = "slowpoke.gif";
-    ctxt.dataDriveHost = DdCliConfigFileIO.builder().getDatadriveHost()
+    ctxt.datadriveHost = DdCliConfigFileIO.builder().getDatadriveHost()
     ctxt.ocsHost = ocsConfig.getOcsEndpointHost()
     ctxt.ocsAPIDeployment = ocsConfig.getOcsApiStage();
 }
@@ -47,8 +47,8 @@ describe("DataDrive-CLI", () => {
 
     describe("csso", () => {
         describe("get datadrive env", () => {
-            it ("should get dataDriveHost", () => {
-                expect(ctxt.dataDriveHost).to.be.a('string');
+            it ("should get datadriveHost", () => {
+                expect(ctxt.datadriveHost).to.be.a('string');
             });
             it ("should get ocsHost", () => {
                 expect(ctxt.ocsHost).to.be.a('string');

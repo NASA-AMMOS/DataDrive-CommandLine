@@ -8,7 +8,9 @@ package:
 	npm --prefix src/ run package
 
 build:
-	docker build -t $(NAME):$(RELEASE_NAME) .
+	docker build -t $(NAME):$(RELEASE_NAME) -f Dockerfile-localbuild .
+	docker run -v ./:/opt/ddrv/deployment $(NAME):$(RELEASE_NAME)
+	echo "Binaries exported to dist/"
 
 test:
 	npm --prefix src/ test

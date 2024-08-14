@@ -3,36 +3,88 @@
  * Created on 6/5/18.
  */
 
-const winston = require('winston');
+const path = require("node:path");
+const winston = require("winston");
+require("winston-daily-rotate-file");
+const utils = require("./utils.js");
+const { Command, Option } = require("commander");
+
+// This section does some inspection of CLI args in case the user has overridden the configured values.
+const program = new Command();
+
+program
+    .option("-l --logdir [logdir]")
+    .option("--log-date-pattern [log-date-pattern]")
+    .option("--no_gzip_rolling_logs")
+    .allowUnknownOption()
+    .exitOverride()
+    .configureOutput({
+        writeOut: (_) => null,
+        writeErr: (_) => null,
+        outputError: (_) => null,
+    });
+
+// We mute all the output of this args processor, since the user will never be calling this file directly.
+// We want any error handling or help messages to be handled by the args processor of the file that has called this one.
+let configOverrides = {};
+try {
+    program.parse();
+    configOverrides = program.opts();
+} catch (e) {}
+
+// Get the base config from disk and combine it with any overrides that have been specified in the CLI
+let config;
+try {
+    config = require("./config.js").getConfig();
+} catch (e) {
+    config = {};
+}
+
+config = { ...config, ...configOverrides };
 
 let debugEnabled = false;
 const infoForUserFlag = true;
 
-
 const { combine, timestamp, label, json, prettyPrint, printf } = winston.format;
 
+const baseLogPath = config.logdir || "./logs";
 
+const transports = [new winston.transports.Console({})];
+
+if (config.logDatePattern) {
+    const logRotationTransport = new winston.transports.DailyRotateFile({
+        filename: "combined-%DATE%.log",
+        datePattern: utils.parseLogRollingOptionIntoWinstonDatePattern(
+            config.logDatePattern,
+        ),
+        zippedArchive: Boolean(config.gzipRollingLogs),
+        // maxSize: "20m",
+        // maxFiles: "14d",
+        dirname: baseLogPath,
+    });
+    transports.push(logRotationTransport);
+} else {
+    transports.push(
+        new winston.transports.File({
+            filename: path.join(baseLogPath, "combined.log"),
+        }),
+    );
+}
 
 const logger = winston.createLogger({
-    level: 'info',
+    level: "debug",
     format: combine(
-        label({ label: 'DataDrive' }),
+        label({ label: "DataDrive" }),
         timestamp(),
         // json(({ level, message, label, timestamp }) => {
         //     return `${timestamp} [${label}] ${level}: ${message}`;
         // }),
         printf(({ level, message, label, timestamp }) => {
             return `${timestamp} [${label}] ${level}: ${message}`;
-        })
+        }),
     ),
-    transports: [
-        new winston.transports.File({ filename: 'error.log', level: 'error' }),
-        new winston.transports.File({ filename: 'combined.log' }),
-        //new winston.transports.Console({format: winston.format.simple()})  winston.format.prettyPrint()
-        new winston.transports.Console({})
-    ]
+    transports,
 });
-
 
 if (debugEnabled) {
     logger.level = "debug";
@@ -43,31 +95,32 @@ exports.logger = {
         if (flag) {
             logger.level = "debug";
             logger.log({
-                level: 'debug',
-                message: "Debug logging enabled"
+                level: "debug",
+                message: "Debug logging enabled",
             });
-        }
-        else
-            logger.level = "info";
+        } else logger.level = "info";
     },
-    info: (msg) => logger.log({
-        level: 'info',
-        message: msg
-    }),
-    debug: (msg) => logger.log({
-        level: 'debug',
-        message: msg
-    }),
-    warn: msg => logger.log({
-        level: 'warn',
-        message: msg
-    }),
-    error: msg => logger.log({
-        level: 'error',
-        message: msg
-    }),
+    info: (msg) =>
+        logger.log({
+            level: "info",
+            message: msg,
+        }),
+    debug: (msg) =>
+        logger.log({
+            level: "debug",
+            message: msg,
+        }),
+    warn: (msg) =>
+        logger.log({
+            level: "warn",
+            message: msg,
+        }),
+    error: (msg) =>
+        logger.log({
+            level: "error",
+            message: msg,
+        }),
     printError: (...args) => {
-
         if (args.length > 1) {
             console.error(...args);
         } else {
@@ -75,7 +128,7 @@ exports.logger = {
             let _msg;
             if (err instanceof Error) {
                 _msg = `error: ${err.toString()}`;
-            } else if (typeof err === 'object') {
+            } else if (typeof err === "object") {
                 if (err.Message) {
                     _msg = `error: ${err.Message}`;
                 } else if (err.message) {
@@ -86,7 +139,10 @@ exports.logger = {
                     _msg = JSON.stringify(err, null, 2);
                 }
             } else {
-                if (err.toString().startsWith('ERROR') || err.toString().startsWith('error')) {
+                if (
+                    err.toString().startsWith("ERROR") ||
+                    err.toString().startsWith("error")
+                ) {
                     _msg = err;
                 } else {
                     _msg = `error: ${err.toString()}`;
@@ -107,7 +163,7 @@ exports.logger = {
                 }
             }
 
-            logger.error('');
+            logger.error("");
             logger.error(_msg);
         }
     },

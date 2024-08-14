@@ -1,98 +1,114 @@
-'use strict';
+const fs = require("fs");
+const { Command, Option } = require("commander");
+const program = new Command();
+const Table = require("easy-table");
 
+const DdUtils = require("./core/DdUtils.js");
+const DdConsts = require("./core/DdConstants.js");
+const DdLogger = require("./core/DdLogger.js").logger;
+const getConfig = require("./core/config.js").getConfig;
 
-const DdConsts     = require('./core/DdConstants.js');
-const DdUtils      = require('./core/DdUtils.js');
-const DdOptions    = require('./core/DdOptions.js');
-const DdLogger     = require('./core/DdLogger.js').logger;
-const {DdCliConfigFileIO} = require('./core/DdCliConfigFileIO');
-
-const Table        = require('easy-table');
-
-
-//get initial state
-let   _dHost  = DdConsts.DEFAULT_DD_HOST;
-let   _pHost  = DdConsts.DEFAULT_PEP_HOST;
-const _cfg    = DdCliConfigFileIO.builder().readConfig(false);
-if (_cfg)
-{
-    if (_cfg[DdConsts.PROP_DATADRIVE_HOST])
-        _dHost = _cfg[DdConsts.PROP_DATADRIVE_HOST];
-    if (_cfg[DdConsts.PROP_PEP_HOST])
-        _pHost = _cfg[DdConsts.PROP_PEP_HOST];
-}
-
-
-DdOptions.option( '-d, --dd-host  [dd-host]',    'DataDrive middleware host.');
-DdOptions.option( '-p, --pep-host [pep-host]',   'PEP host.');
-DdOptions.option( '-r --reset', `Reset configuration to default values.`);
-DdOptions.setCustomHelp(function () {
-    console.log('');
-    console.log('  When no arguments are specified, the command displays the current configuration.');
-});
-DdOptions.parse(process.argv);
-
-
-//Print config nicely
-function stringifyDd(map) {
-    if (map) {
-        const t = new Table();
-        t.cell('DataDrive Host:', map[DdConsts.PROP_DATADRIVE_HOST] || '(undefined)');
-        t.cell('PEP Host:', map[DdConsts.PROP_PEP_HOST] || '(undefined)');
-        t.newRow();
-        return '\n' + t.printTransposed();
-    } else{
-        return "\nNo configuration available."
+function displayExistingConfig() {
+    const t = new Table();
+    let config;
+    try {
+        config = getConfig();
+    } catch (e) {
+        DdUtils.errorAndExit(e.message);
     }
 
+    [
+        { key: "datadriveHost", text: "DataDrive Host" },
+        { key: "pepHost", text: "PEP Host" },
+        { key: "logdir", text: "Log Directory" },
+        { key: "logDatePattern", text: "Date pattern used for rolling logs" },
+        { key: "gzipRollingLogs", text: "Gzip rolling logs" },
+        { key: "authType", text: "Authentication type (M20 or MGSS)" },
+    ].forEach((row) => {
+        t.cell(row.text, config[row.key] || "(undefined)");
+    });
+    t.newRow();
+    DdLogger.info("\nDataDrive configuration is: \n" + t.printTransposed());
 }
 
-function stringifyOcs(map) {
-    if (map) {
-        const t = new Table();
-        t.cell('OCS Host:', map[DdConsts.PROP_OCS_HOST] || '(undefined)');
-        t.cell('OCS API:', map[DdConsts.PROP_OCS_API_DEPLOYMENT] || '(undefined)');
-        t.newRow();
-        return '\n' + t.printTransposed();
-    } else {
-        return "\nNo configuration available."
+function writeNewConfig(options) {
+    let existingConfig = {};
+    try {
+        existingConfig = getConfig();
+    } catch (e) {}
+
+    const outObj = {
+        pepHost:
+            options.pepHost ||
+            existingConfig.pepHost ||
+            DdConsts.DEFAULT_PEP_HOST,
+        datadriveHost:
+            options.ddHost ||
+            existingConfig.datadriveHost ||
+            DdConsts.DEFAULT_DD_HOST,
+        logdir:
+            options.logdir ||
+            existingConfig.logdir ||
+            DdConsts.DEFAULT_LOG_PATH,
+        logDatePattern: options.logDatePattern,
+        gzipRollingLogs: !options.noGzip,
+        authType: options.authType,
+    };
+
+    const cfgPath = DdUtils.getDdCfgFilepath();
+    try {
+        fs.writeFileSync(cfgPath, JSON.stringify(outObj));
+    } catch (e) {
+        DdUtils.errorAndExit(
+            `Unable to write configuration file at ${cfgPath}. Do you have write permission to this location?`,
+        );
     }
 }
 
+function main() {
+    program
+        .option("-p, --pep-host [pep-host]", "PEP host.")
+        .option("-d, --dd-host  [dd-host]", "DataDrive middleware host.")
+        .option(
+            "-l --logdir [logdir]",
+            `Directory to store log files. Default is current directory.`,
+        )
+        .option("-r --reset", `Reset configuration to default values.`)
+        .option(
+            "--log-date-pattern [log-date-pattern]",
+            "Turns on log rolling using the specified format. Options are: monthly, weekly, daily. This option can also accept a custom format (more info: https://momentjs.com/docs/#/displaying/format/). This format will define the frequency of the log rotation, with the logs rotating on the smallest date/time increment specified in the format.",
+        )
+        .option(
+            "--no_gzip_rolling_logs",
+            "Disable gzipping of output logs if log-rolling is used.",
+        )
+        .addHelpText(
+            "after",
+            "\n  When no arguments are specified, the command displays the current configuration.",
+        );
 
+    program.addOption(
+        new Option("-a, --auth-type <auth-type>", "Auth Type")
+            .choices(["M20", "MGSS"])
+            .default("M20"),
+    );
 
-if (DdOptions.program.reset) {
-    //check for incompatible options
-    if (DdOptions.program.ddHost || DdOptions.program.pepHost) {
-        DdUtils.errorAndExit('You cannot specify "--reset" with any other options.');
-    } else {
-        _dHost = DdConsts.DEFAULT_DD_HOST;
-        _pHost = DdConsts.DEFAULT_PEP_HOST;
+    program.parse();
+
+    const options = program.opts();
+
+    // Handle no arguments (just display existing config)
+    if (!Object.keys(options).filter((key) => key !== "authType").length) {
+        return displayExistingConfig();
     }
-} else if (!DdOptions.program.ddHost && !DdOptions.program.pepHost ) {
 
-    DdLogger.info('\nDataDrive configuration is:' + stringifyDd(_cfg));
+    // if (options.reset) {
+    //     console.log("RESET");
+    //     return;
+    // }
 
-    //add the OCS config stuff users prolly care about
-    //let ocsCfg = OcsCfg.getOcsConfig(false);
-    //DdLogger.info('\nOCS configuration is:' + stringifyOcs(ocsCfg));
-    //DdLogger.info( "");
-    process.exit(0);
+    // Handle saving of new options
+    writeNewConfig(options);
 }
 
-if (DdOptions.program.ddHost && DdOptions.program.ddHost !== true) {
-    _dHost = DdOptions.program.ddHost;
-}
- if (DdOptions.program.pepHost && DdOptions.program.pepHost !== true) {
-     _pHost = DdOptions.program.pepHost;
-}
-
-//Save changes to config file
-DdCliConfigFileIO.builder().writeConfig({ datadriveHost : _dHost, pepHost : _pHost});
-
-//inform user of updated state
-let _updatedCfg = DdCliConfigFileIO.builder().readConfig(false);
-if (_updatedCfg)
-    DdLogger.info('\nThe DataDrive configuration has been changed to:' + stringifyDd(_updatedCfg));
-else
-    DdUtils.errorAndExit('\nUnable to read updated DataDrive configuration file.');
+main();
