@@ -3,43 +3,47 @@
   "description": "DataDrive Command Line Interface clients",
   "main": "ddrv.js",
   "engines": {
-    "node": "~14.15.0"
+    "node": "~18.19.1"
   },
   "dependencies": {
+    "@gov.nasa.jpl.ammos.ids/mdms-aocs-js-client": "1.1",
     "@gov.nasa.jpl.m2020.cs3/ocs-js-client": "~7.6.0",
     "axios": "~0.18.1",
     "axios-debug": "0.0.4",
     "bluebird": "^3.5.2",
     "chai": "~4.2.0",
-    "chokidar": "~2.1.5",
-    "commander": "~2.20.0",
+    "chokidar": "^3.6.0",
+    "commander": "^11.1.0",
     "cookie": "~0.3.1",
     "dotenv": "~7.0.0",
     "easy-table": "~1.1.1",
-    "form-data": "~2.5.0",
+    "form-data": "^4.0.0",
     "fs-extra": "~8.1.0",
     "glob-to-regexp": "~0.4.1",
-    "jsonschema": "~1.2.4",
+    "jsonschema": "^1.4.1",
     "lodash": "~4.17.15",
     "mocha": "~6.2.0",
     "moment": "~2.24.0",
+    "node-fetch": "^2.7.0",
     "pkg": "^5.1.0",
     "request": "~2.88.2",
     "shelljs": "~0.8.3",
     "upath": "~1.1.2",
     "winston": "~3.2.1",
+    "winston-daily-rotate-file": "^5.0.0",
     "ws": "~6.2.1"
   },
   "devDependencies": {
-    "@semantic-release/commit-analyzer": "^6.3.0",
-    "@semantic-release/exec": "^3.3.6",
-    "@semantic-release/npm": "^5.1.15",
-    "@semantic-release/git": "^7.0.16",
-    "@semantic-release/github": "^5.4.3",
-    "@semantic-release/release-notes-generator": "^7.3.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^10.0.1",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^9.0.4",
+    "@semantic-release/npm": "^10.0.4",
+    "@semantic-release/release-notes-generator": "^11.0.4",
     "conventional-changelog-eslint": "^3.0.1",
-    "@semantic-release/changelog": "^3.0.4",
-    "semantic-release": "^15.13.24"
+    "escape-string-regexp": "^5.0.0",
+    "semantic-release": "^21.0.7"
   },
   "directories": {
     "test": "test"
@@ -140,5 +144,5 @@
   ],
   "author": "Nicholas Toole",
   "license": "UNLICENSED",
-  "version": "1.7.3"
+  "version": "2.0.1"
 }

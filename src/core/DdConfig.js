@@ -27,7 +27,7 @@ class DdConfig {
         this.wasConfiguredSuccessfully = false;
         this.ssoTokenApi = undefined;
         this.cssoToken = undefined;
-        this.dataDriveHost    = undefined;
+        this.datadriveHost    = undefined;
         this.pepUrl           = undefined;
         this.ocsHost          = undefined;
         this.ocsAPIDeployment = undefined;
@@ -47,7 +47,7 @@ class DdConfig {
                 return null;
             }
 
-            this.dataDriveHost    = "https://" + ddHost;
+            this.datadriveHost    = "https://" + ddHost;
             this.pepUrl           = "https://" + pepHost;
 
             //Check the environment for the DEBUG state
@@ -72,8 +72,8 @@ class DdConfig {
         return this.pepUrl
     }
 
-    getDataDriveHost() {
-        return this.dataDriveHost
+    getDatadriveHost() {
+        return this.datadriveHost
     }
 
     getOcsHost() {

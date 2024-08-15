@@ -39,7 +39,7 @@ let DdPubConfig = (function () {
             return null;
         }
 
-        this.dataDriveHost    = "https://"+ddHost;
+        this.datadriveHost    = "https://"+ddHost;
         this.ocsHost = null;
         this.ocsAPIDeployment = null;
 

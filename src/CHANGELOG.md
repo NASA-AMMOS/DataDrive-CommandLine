@@ -1,3 +1,102 @@
+## [2.0.1](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/compare/v2.0.0...v2.0.1) (2024-07-18)
+
+
+### Bug Fixes
+
+* revert to node 18 due to pkg not supporting node 20. good till April 2025 ([#170](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/170)) ([8761d4a](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/8761d4a4040af5c1ed6fd64d75cbefda89099e5b))
+
+# [2.0.0](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/compare/v1.9.0...v2.0.0) (2024-07-11)
+
+
+### breaking
+
+* Dummy breaking ([#155](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/155)) ([c3eb79e](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/c3eb79e3e8ca41fb1ce39f17dbce43d6197988b5))
+* Dummy breaking ([#157](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/157)) ([b8a0072](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/b8a0072e4a1a1f21fb4aa0e1f2418dd0575b140b))
+
+
+* Merge pull request #166 from MIPL/develop ([9cf124d](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/9cf124d42c29a1405b9ba58ebf5565c4606d609a)), closes [#166](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/166)
+* BREAKING CHANGE : Dummy breaking (#165) ([8ae6f4b](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/8ae6f4bcc35452a3964c9fa849d065b4b27d52d2)), closes [#165](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/165)
+* Merge pull request #164 from MIPL/develop ([7f0b9bd](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/7f0b9bd4545d3eb9fdb9b5b603c21065371c2463)), closes [#164](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/164)
+* BREAKING CHANGE : Dummy breaking (#163) ([557b542](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/557b54214a895107961e126472a62c7de8e8b517)), closes [#163](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/163)
+* Merge pull request #162 from MIPL/develop ([a8140ae](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/a8140aeb99f08212313abc550f807676d8ec1a00)), closes [#162](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/162)
+* BREAKING CHANGE : Dummy breaking (#161) ([4be0122](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/4be0122969dc77e913595eecf8180bd82fafcda9)), closes [#161](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/161)
+* Merge pull request #160 from MIPL/develop ([8d2e369](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/8d2e3696fbc1c86e6c36fb86a21aba0d9f692cc4)), closes [#160](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/160)
+* BREAKING CHANGE : Dummy breaking (#159) ([d79f58f](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/d79f58fe8a2ad0be9006f2de125e31a4bf125ae3)), closes [#159](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/159)
+* Merge pull request #156 from MIPL/develop ([fbebbc7](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/fbebbc75ab070b5fc7fa965375eb67d199db51b0)), closes [#156](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/156)
+
+
+### BREAKING CHANGES
+
+* July Release Attempt 08
+* dummy
+
+* breaking: dummy change
+* upgrade node version
+* version in package lock is reverted
+* update semantic release versions
+* update jenkins file
+* update jenkins file
+* July Release Attempt 07
+* dummy
+
+* breaking: dummy change
+* upgrade node version
+* version in package lock is reverted
+* update semantic release versions
+* update jenkins file
+* July Release Attempt 05
+* dummy
+
+* breaking: dummy change
+* upgrade node version
+* version in package lock is reverted
+* update semantic release versions
+* July Release Attempt 04
+* dummy
+
+* breaking: dummy change
+* upgrade node version
+* version in package lock is reverted
+* dummy
+
+* breaking: dummy change
+* upgrade node version
+* dummy
+
+* breaking: dummy change
+* dummy
+
+* breaking: dummy change
+
+# [1.9.0](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/compare/v1.8.2...v1.9.0) (2024-04-23)
+
+
+### Features
+
+* get MGSS working while maintaining M20 compatibility ([#130](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/130)) ([8b28023](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/8b28023)), closes [#118](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/118)
+
+## [1.8.2](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/compare/v1.8.1...v1.8.2) (2023-03-23)
+
+
+### Bug Fixes
+
+* long timeout gap + bugfix from refactor ([#99](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/99)) ([4c5fc17](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/4c5fc17))
+* wrong ocs version ([#100](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/100)) ([bdd2a72](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/bdd2a72))
+
+## [1.8.1](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/compare/v1.8.0...v1.8.1) (2022-10-17)
+
+
+### Bug Fixes
+
+* Download error when G7.5 PEP ([#97](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/97)) ([2b694ca](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/2b694ca))
+
+# [1.8.0](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/compare/v1.7.3...v1.8.0) (2022-03-30)
+
+
+### Features
+
+* Support 'skip-unchanged' where a file that exists and is unchanged is not re-downloaed ([#90](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/90)) ([ab468bc](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/ab468bc))
+
 ## [1.7.3](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/compare/v1.7.2...v1.7.3) (2022-01-12)
 
 
