@@ -1,3 +1,26 @@
+## [2.0.4](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/compare/v2.0.3...v2.0.4) (2024-10-09)
+
+
+### Bug Fixes
+
+* release version to artifactory 2 ([#199](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/199)) ([e5c2e80](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/e5c2e8017975accbcdc13108e26f3c0cdc1848e3))
+
+## [2.0.3](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/compare/v2.0.2...v2.0.3) (2024-10-09)
+
+
+### Bug Fixes
+
+* push releaase version to artifactory ([#197](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/197)) ([555a451](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/555a451ee4b9b852065509e325affef9aefff1ff))
+
+## [2.0.2](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/compare/v2.0.1...v2.0.2) (2024-10-09)
+
+
+### Bug Fixes
+
+* Follow Notification Lambda approach to build and upload zip file + new way to clean directory ([#191](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/191)) ([38cc89c](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/38cc89c17e86a5f2601a008b0bd770b3d2941883))
+* still testing release stage ([#195](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/195)) ([df295b8](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/df295b8178930aef3c6243388d01af735987c627))
+* testing release ([#193](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/193)) ([dca476e](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/dca476e536157d904487dc08193620a6f218ee54))
+
 ## [2.0.1](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/compare/v2.0.0...v2.0.1) (2024-07-18)
 
 

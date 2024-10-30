@@ -3,7 +3,6 @@ const program = new Command();
 const Table = require("easy-table");
 
 const DdConsts = require("./core/DdConstants.js");
-const DdUtils = require("./core/DdUtils.js");
 const DdLogger = require("./core/DdLogger.js").logger;
 const ocs_utils = require("./core/ocs_utils.js");
 
@@ -11,7 +10,7 @@ async function getPackages() {
     const ocsClient = await ocs_utils.getOCSClient();
     ocs_utils.getAllPackages(ocsClient, (err, res) => {
         if (err) {
-            DdUtils.errorAndExit(`Error making request to OCS: ${err}`);
+            DdLogger.errorAndExit(`Error making request to OCS: ${err}`);
         }
         const t = new Table();
 

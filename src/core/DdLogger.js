@@ -72,7 +72,7 @@ if (config.logDatePattern) {
 }
 
 const logger = winston.createLogger({
-    level: "debug",
+    level: "info",
     format: combine(
         label({ label: "DataDrive" }),
         timestamp(),
@@ -166,5 +166,14 @@ exports.logger = {
             logger.error("");
             logger.error(_msg);
         }
+    },
+    errorAndExit: function (err) {
+        if (err instanceof Error) {
+            logger.error(err.message);
+            logger.debug(err.stack);
+        } else {
+            logger.error(err);
+        }
+        process.exit(1);
     },
 };

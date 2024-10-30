@@ -3,18 +3,19 @@ const fs = require("fs");
 const https = require("https");
 const fetch = require("node-fetch");
 const urllib = require("url");
+const nodeUtil = require("node:util");
+const exec = nodeUtil.promisify(require("node:child_process").exec);
 
 const ocsJSClientMdms = require("@gov.nasa.jpl.ammos.ids/mdms-aocs-js-client");
-const ocsJSClientM20 = require("@gov.nasa.jpl.m2020.cs3/ocs-js-client");
+const ocsJSClientM20 =
+    require("@gov.nasa.jpl.m2020.cs3/ocs-js-client").OcsClient;
 
 const CSsoClient = require("@gov.nasa.jpl.m2020.cs3/ocs-js-client/core/csso");
 const SsoClient = require("@gov.nasa.jpl.ammos.ids/mdms-aocs-js-client/core/sso");
 
 const DdLogger = require("./DdLogger").logger;
 const DdConsts = require("./DdConstants");
-const DdUtils = require("./DdUtils");
 const config = require("./config.js").config;
-const SsoToken = require("./SsoToken.js");
 const utils = require("./utils.js");
 
 const OCS_MESG_SCHEMA = {
@@ -107,7 +108,7 @@ function getPackageID(ocsClient, package) {
     return new Promise((resolve, reject) => {
         ocsClient.client.describeAllPackages(options, (err, res) => {
             if (err) {
-                DdUtils.errorAndExit(`Error making request to OCS: ${err}`);
+                DdLogger.errorAndExit(`Error making request to OCS: ${err}`);
             }
             resolve(res.data.find((pkg) => pkg.name === package));
         });
@@ -149,9 +150,10 @@ async function downloadFileFromMetadata(
     ocsClient,
     fileData,
     destPath,
-    overwrite = false,
+    options,
 ) {
     // CHECK FOR OVERWRITE
+    const overwrite = Boolean(options.overwrite);
     let fileExists;
     try {
         fileExists = !(await fs.promises.access(destPath));
@@ -163,7 +165,7 @@ async function downloadFileFromMetadata(
         return;
     }
 
-    DdLogger.debug(`Write out file ${fileData.ocs_full_name} to ${destPath}`);
+    DdLogger.info(`Write out file ${fileData.ocs_full_name} to ${destPath}`);
 
     // Check that the output dir exists, create if not
     const destDir = path.dirname(destPath);
@@ -190,9 +192,9 @@ async function downloadFileFromMetadata(
         fileData,
     );
 
-    const options = {
+    const fetchOptions = {
         headers: {
-            Cookie: `${DdConsts.SSO_SESSION_KEY_LOOKUP[config.venue]}=${
+            Cookie: `${DdConsts.SSO_SESSION_KEY_LOOKUP[config.authType]}=${
                 ocsClient.token
             }`,
         },
@@ -202,11 +204,11 @@ async function downloadFileFromMetadata(
         time: true,
     };
 
-    if (config.venue === "MGSS") {
-        options.headers["Content-Type"] = "application/json";
+    if (config.authType === "MGSS") {
+        fetchOptions.headers["Content-Type"] = "application/json";
     }
 
-    let res = await fetch(downloadUrl, options);
+    let res = await fetch(downloadUrl, fetchOptions);
 
     if (!res.ok) {
         DdLogger.error(
@@ -215,10 +217,10 @@ async function downloadFileFromMetadata(
         return;
     }
 
-    if (config.venue === "MGSS") {
+    if (config.authType === "MGSS") {
         const presigned_url_msg = await res.json();
-        delete options.headers["Content-Type"];
-        res = await fetch(presigned_url_msg.presigned_url, options);
+        delete fetchOptions.headers["Content-Type"];
+        res = await fetch(presigned_url_msg.presigned_url, fetchOptions);
         if (!res.ok) {
             DdLogger.error(
                 `Couldn't download file: ${fileData.ocs_full_name}: ${res}`,
@@ -234,6 +236,23 @@ async function downloadFileFromMetadata(
         fileStream.on("finish", resolve);
     });
 
+    // Kick off callback command if there is one
+    if (options.callback) {
+        const env = {
+            ...process.env,
+            FILENAME: getFilenameFromOCSURL(fileData.ocs_full_name),
+            SRC_PATH: fileData.ocs_full_name,
+            DEST_PATH: destPath,
+        };
+        const { stdout, stderr } = await exec(options.callback, { env });
+        DdLogger.info(stdout);
+        if (stderr) {
+            DdLogger.error(
+                `Error encountered running file download callback: "${options.callback}": ${stderr}`,
+            );
+        }
+    }
+
     // Check that file on disk matches checksum
     // const hash = await utils.getFileHash(destPath);
     // if (hash !== fileData.ocs_etag) {
@@ -241,16 +260,11 @@ async function downloadFileFromMetadata(
     // }
 }
 
-function getCSSOToken() {
-    const CSSOAuth = new SsoToken();
-    return CSSOAuth.getToken();
-}
-
 async function getMiddlewareSettings(config, token) {
     const options = {
         method: "GET",
         headers: {
-            Cookie: `${DdConsts.SSO_SESSION_KEY_LOOKUP[config.venue]}=${token}`,
+            Cookie: `${DdConsts.SSO_SESSION_KEY_LOOKUP[config.authType]}=${token}`,
         },
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
     };
@@ -269,11 +283,13 @@ async function getMiddlewareSettings(config, token) {
         let outMsg = `Can't connect to middleware endpoint at url: ${url}.`;
         if (res && res.status === 401) {
             const authProgram =
-                config.venue === "M20" ? "CREDSS" : "/etc/request_ssotoken.sh";
+                config.authType === "M20"
+                    ? "CREDSS"
+                    : "/etc/request_ssotoken.sh";
             outMsg = `Authentication error connecting to DataDrive. Have you updated your credentials via ${authProgram} recently?`;
         }
 
-        return DdUtils.errorAndExit(outMsg);
+        return DdLogger.errorAndExit(outMsg);
     }
 
     DdLogger.debug(
@@ -297,11 +313,11 @@ async function getOCSClient(options) {
     let token;
     try {
         token =
-            config.venue === "MGSS"
+            config.authType === "MGSS"
                 ? SsoClient.cliGetSSOTokens(venue)
                 : CSsoClient.cliGetCSSOTokens(venue);
     } catch (e) {
-        DdUtils.errorAndExit(e.message);
+        DdLogger.errorAndExit(e.message);
     }
 
     const middlewareSettings = await getMiddlewareSettings(config, token);
@@ -311,7 +327,7 @@ async function getOCSClient(options) {
     };
 
     let client;
-    switch (config.venue) {
+    switch (config.authType) {
         case "MGSS":
             ocsConfig.ocsEndpointPort = middlewareSettings.ocs_endpoint_port;
             client = new ocsJSClientMdms(ocsConfig);
@@ -324,7 +340,7 @@ async function getOCSClient(options) {
     return {
         client,
         token,
-        ssoKey: DdConsts.SSO_KEY_LOOKUP[config.venue],
+        ssoKey: DdConsts.SSO_KEY_LOOKUP[config.authType],
         username: token.split(":") ? token.split(":")[1] : "",
     };
 }
@@ -359,6 +375,7 @@ async function getPlaybackEvents(
     }
 
     if (options.filter) {
+        console.log(options.filter);
         body.glob_regex = options.filter.endsWith("*")
             ? options.filter
             : options.filter + "*";
