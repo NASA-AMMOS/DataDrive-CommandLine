@@ -1,3 +1,10 @@
+## [2.0.5](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/compare/v2.0.4...v2.0.5) (2024-10-30)
+
+
+### Bug Fixes
+
+* dummy version bump ([#205](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/issues/205)) ([8c6cb0a](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/commit/8c6cb0a9adbd35be1bc9b4c99ab29ad8a05a5c2c))
+
 ## [2.0.4](https://github.jpl.nasa.gov/MIPL/DataDrive-CommandLine/compare/v2.0.3...v2.0.4) (2024-10-09)
 
 
