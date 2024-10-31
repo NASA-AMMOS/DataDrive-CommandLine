@@ -3,10 +3,10 @@ const { Command, Option } = require("commander");
 const program = new Command();
 const Table = require("easy-table");
 
-const DdUtils = require("./core/DdUtils.js");
 const DdConsts = require("./core/DdConstants.js");
 const DdLogger = require("./core/DdLogger.js").logger;
 const getConfig = require("./core/config.js").getConfig;
+const utils = require("./core/utils.js");
 
 function displayExistingConfig() {
     const t = new Table();
@@ -14,7 +14,7 @@ function displayExistingConfig() {
     try {
         config = getConfig();
     } catch (e) {
-        DdUtils.errorAndExit(e.message);
+        DdLogger.errorAndExit(e.message);
     }
 
     [
@@ -52,14 +52,17 @@ function writeNewConfig(options) {
             DdConsts.DEFAULT_LOG_PATH,
         logDatePattern: options.logDatePattern,
         gzipRollingLogs: !options.noGzip,
-        authType: options.authType,
+        authType:
+            options.authType ||
+            existingConfig.authType ||
+            DdConsts.DEFAULT_AUTH_TYPE,
     };
 
-    const cfgPath = DdUtils.getDdCfgFilepath();
+    const cfgPath = utils.getCfgFilepath();
     try {
         fs.writeFileSync(cfgPath, JSON.stringify(outObj));
     } catch (e) {
-        DdUtils.errorAndExit(
+        DdLogger.errorAndExit(
             `Unable to write configuration file at ${cfgPath}. Do you have write permission to this location?`,
         );
     }
@@ -88,9 +91,10 @@ function main() {
         );
 
     program.addOption(
-        new Option("-a, --auth-type <auth-type>", "Auth Type")
-            .choices(["M20", "MGSS"])
-            .default("M20"),
+        new Option("-a, --auth-type <auth-type>", "Auth Type").choices([
+            "M20",
+            "MGSS",
+        ]),
     );
 
     program.parse();
@@ -98,7 +102,7 @@ function main() {
     const options = program.opts();
 
     // Handle no arguments (just display existing config)
-    if (!Object.keys(options).filter((key) => key !== "authType").length) {
+    if (!Object.keys(options).length) {
         return displayExistingConfig();
     }
 

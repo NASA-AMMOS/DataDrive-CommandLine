@@ -1,5 +1,4 @@
-FROM cae-artifactory.jpl.nasa.gov:17001/node:18.16.1
-MAINTAINER William Phyo <wai.phyo@jpl.nasa.gov>
+FROM node:18
 
 ENV HOME .
 
