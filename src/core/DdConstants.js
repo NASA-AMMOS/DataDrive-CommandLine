@@ -37,7 +37,7 @@ const ENV_DEBUG_ENABLED = "DEBUG";
 const DEFAULT_DD_HOST = "datadrive-mid.m20-dev.jpl.nasa.gov";
 const DEFAULT_PEP_HOST = "data.m20-dev.jpl.nasa.gov";
 const DEFAULT_LOG_PATH = "./";
-const DEFAULT_VENUE = "M20";
+const DEFAULT_AUTH_TYPE = "M20";
 
 //OCS configuration
 const PROP_OCS_HOST = "ocsEndpointHost";
@@ -95,7 +95,7 @@ module.exports = {
     S3_URL_REGEX,
     DEFAULT_LOG_PATH,
     SSO_SESSION_KEY_LOOKUP,
-    DEFAULT_VENUE,
+    DEFAULT_AUTH_TYPE,
     SSO_KEY_LOOKUP,
     //DATADRIVE_HOST
 };

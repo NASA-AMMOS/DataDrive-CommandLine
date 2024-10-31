@@ -24,32 +24,14 @@
 const fs = require("fs");
 const util = require("util");
 const path = require("path");
-const moment = require("moment");
-const { FileMetadata } = require("./core/DdFileMetadata.js");
 const { Command, Option } = require("commander");
 const program = new Command();
 const Validator = require("jsonschema").Validator;
 
 //local imports
 const DdConsts = require("./core/DdConstants.js");
-const DdUtils = require("./core/DdUtils.js");
-const { DataDriveWsClient } = require("./core/DdWsClient.js");
-const DdSubConfig = require("./core/DdSubConfig.js");
-const DdOptions = require("./core/DdOptions.js");
 const DdLogger = require("./core/DdLogger.js").logger;
-const {
-    DataDriveMWServiceSettings,
-} = require("./core/DataDriveMWServiceSettings");
-const { Processor, Queue } = require("./core/DdQueue.js");
-const {
-    QueueEmptyError,
-    MaxProcessSizeError,
-    CannotWriteToLocalFileError,
-} = require("./core/DdError.js");
-const DdPluginHandler = require("./core/DdPluginHandler.js").PluginHandler;
-const { EmptyPromise } = require("./core/EmptyPromise");
 const config = require("./core/config.js").config;
-const SsoToken = require("./core/SsoToken.js");
 const utils = require("./core/utils.js");
 const ocs_utils = require("./core/ocs_utils.js");
 const ws_utils = require("./core/websocket_utils.js");
@@ -151,7 +133,7 @@ function validateOptions(options = {}) {
 
     if (errors.length) {
         const outMsg = errors.join("\n");
-        return DdUtils.errorAndExit(outMsg);
+        return DdLogger.errorAndExit(outMsg);
     }
 
     return options;
@@ -167,13 +149,13 @@ function getArgs() {
         .addOption(
             new Option(
                 "-f, --filter [value]",
-                "A wildcard expression to filter files based on OCS Full Name.",
+                "A wildcard expression to filter files by filename. (See '-if' option to apply this filter to the full file path.)",
             ).conflicts("regex"),
         )
         .addOption(
             new Option(
                 "-x, --regex [value]",
-                "A regex expression to filter files based on OCS Full Name. Please reference https://www.elastic.co/guide/en/elasticsearch/reference/6.4/query-dsl-regexp-query.html#regexp-syntax and NodeJS RegExp.",
+                "A regex expression to filter files by filename. (See '-if' option to apply this filter to the full file path.) Please reference https://www.elastic.co/guide/en/elasticsearch/reference/6.4/query-dsl-regexp-query.html#regexp-syntax and NodeJS RegExp.",
             ).conflicts("filter"),
         )
         .option(
@@ -190,7 +172,7 @@ function getArgs() {
         )
         .option(
             "-if, --include-full-path",
-            "If filter and regex expressions include only the name or the full path. defaulted to `NO`.",
+            "Filters and regexps will be applied the entire file path.",
         )
         .option(
             "-O, --overwrite",
@@ -215,7 +197,8 @@ function getArgs() {
         .option(
             "--log-date-pattern [log-date-pattern]",
             "Turns on log rolling using the specified format. Options are: monthly, weekly, daily. This option can also accept a custom format (more info: https://momentjs.com/docs/#/displaying/format/). This format will define the frequency of the log rotation, with the logs rotating on the smallest date/time increment specified in the format.",
-        );
+        )
+        .option("--callback [callback]", "File download callback command. This is executed after each file download. It should be enclosed in single-quotes and may use the following special variables: $FILENAME $SRC_PATH $DEST_PATH. For example, ddrv subscribe -p sample-package -o output_folder --callback 'echo $FILENAME $SRC_PATH $DEST_PATH'");
 
     program.parse();
     return validateOptions(program.opts());
@@ -437,7 +420,7 @@ async function downloadFileAndUpdateCheckpoint(ocsClient, options, fileData) {
                 ocsClient,
                 fileData,
                 destPath,
-                options.overwrite,
+                options,
             );
             break;
         } catch (e) {
@@ -525,7 +508,7 @@ async function verifyOutputPath(options) {
             }
         }
         if (errMsg) {
-            DdUtils.errorAndExit(errMsg);
+            DdLogger.errorAndExit(errMsg);
         }
     }
 }
@@ -577,14 +560,14 @@ async function main() {
         try {
             new RegExp(options.regex);
         } catch (e) {
-            DdUtils.errorAndExit(
+            DdLogger.errorAndExit(
                 `Regexp ${options.regex} is not a valid regular expression.`,
             );
         }
     }
 
     if (options.savedSearchName && options.packageName) {
-        DdUtils.errorAndExit(
+        DdLogger.errorAndExit(
             "Both a saved search and a package have been specified. Please choose only one",
         );
     }
@@ -596,7 +579,9 @@ async function main() {
             options.packageName,
         );
         if (!packageInfo) {
-            DdUtils.errorAndExit(`Cannot find package: ${options.packageName}`);
+            DdLogger.errorAndExit(
+                `Cannot find package: ${options.packageName}`,
+            );
         }
         options.packageInfo = packageInfo;
     } else if (options.savedSearchName) {
@@ -606,7 +591,7 @@ async function main() {
         try {
             ocs_utils.getSavedSearchInfo(ocsClient, options.savedSearchName);
         } catch (e) {
-            DdUtils.errorAndExit(e.message);
+            DdLogger.errorAndExit(e.message);
         }
     }
 

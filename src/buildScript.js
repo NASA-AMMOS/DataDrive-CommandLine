@@ -1,29 +1,24 @@
-'use strict';
+"use strict";
 
-const shelljs = require('shelljs');
-const minimist = require('minimist');
-const fs = require('fs-extra');
-const path = require('path');
+const shelljs = require("shelljs");
+const minimist = require("minimist");
+const fs = require("fs-extra");
+const path = require("path");
 
 const WORKSPACE = process.env.WORKSPACE || process.cwd();
 const DIST_DIR = `${__dirname}-dist`;
-const SVC_NAME = 'cli'; //path.basename(__dirname);
+const SVC_NAME = "cli"; //path.basename(__dirname);
 const ZIP_FILE = `ddrv-${SVC_NAME}-bundle.zip`;
-const DEPLOY_DIR = '../deployment';
-const PKG_DIR = './ddrv-cli';
+const DEPLOY_DIR = "../deployment";
+const PKG_DIR = "./ddrv-cli";
 
 //console.log(`DIST_DIR = ${DIST_DIR}`)
 //console.log(`DEPLOY_DIR = ${DEPLOY_DIR}`)
 //console.log(`PKG_DIR = ${PKG_DIR}`)
 
+const README_FILE = "README.TXT";
 
-const README_FILE = 'README.TXT';
-
-const {
-    clean,
-    build,
-    deploy
-} = minimist(process.argv.slice(2));
+const { clean, build, deploy } = minimist(process.argv.slice(2));
 
 let logLevel = 0;
 
@@ -32,11 +27,11 @@ function upLevel(lvlDelta) {
 }
 
 function log(msg) {
-    console.log('  '.repeat(logLevel) + msg);
+    console.log("  ".repeat(logLevel) + msg);
 }
 
 function err(msg) {
-    console.error('  '.repeat(logLevel) + msg);
+    console.error("  ".repeat(logLevel) + msg);
 }
 
 function doClean() {
@@ -78,7 +73,11 @@ function doCopyRecursive(fromDir, toDir) {
         // Recurse if directory.
         const _stats = fs.lstatSync(fromFilePath);
         if (_stats.isDirectory()) {
-            if (files[i] === 'core' || files[i] === 'plugins' || files[i] === 'exceptions') {
+            if (
+                files[i] === "core" ||
+                files[i] === "plugins" ||
+                files[i] === "exceptions"
+            ) {
                 log(`Copying directory ${fromFilePath}...`);
                 upLevel(1);
                 doCopyRecursive(fromFilePath, toFilePath);
@@ -88,7 +87,6 @@ function doCopyRecursive(fromDir, toDir) {
             log(`Copying file ${files[i]}`);
             fs.copySync(fromFilePath, toFilePath);
         }
-
     }
 }
 
@@ -110,7 +108,9 @@ function doCopy() {
 function doConfig() {
     log(`Setting up NPM config params in ${DIST_DIR}.`);
     if (process.env.VENUE || process.env.BRANCH) {
-        log(`Found environment variables VENUE=${process.env.VENUE} and BRANCH=${process.env.BRANCH}`);
+        log(
+            `Found environment variables VENUE=${process.env.VENUE} and BRANCH=${process.env.BRANCH}`,
+        );
         const NPMRC = `${DIST_DIR}/.npmrc`;
         if (process.env.VENUE) {
             fs.writeFileSync(NPMRC, `venue = "${process.env.VENUE}"\n`);
@@ -119,14 +119,35 @@ function doConfig() {
             fs.appendFileSync(NPMRC, `branch = "${process.env.BRANCH}"\n`);
         }
     } else {
-        log('No environment variables for VENUE/BRANCH. Deployment will use the defaults from package.json');
+        log(
+            "No environment variables for VENUE/BRANCH. Deployment will use the defaults from package.json",
+        );
     }
 }
 
 function doInstall() {
     log(`Running NPM INSTALL in ${DIST_DIR}.`);
     shelljs.cd(DIST_DIR);
-    shelljs.exec('npm install --production');
+    shelljs.exec("npm install --production");
+}
+
+function doTextReplace() {
+    const licenseText = fs.readFileSync(
+        path.join(__dirname, "LICENSE"),
+        "utf-8",
+    );
+    const licenseScript = fs.readFileSync(
+        path.join(DIST_DIR, "ddrv-license.js"),
+        "utf-8",
+    );
+    const updatedLicenseScript = licenseScript.replace(
+        "${LICENSE_TEXT}",
+        licenseText,
+    );
+    fs.writeFileSync(
+        path.join(DIST_DIR, "ddrv-license.js"),
+        updatedLicenseScript,
+    );
 }
 
 function doBuild(clean = true) {
@@ -134,6 +155,7 @@ function doBuild(clean = true) {
     upLevel(1);
     doInit();
     doCopy();
+    doTextReplace();
     doConfig();
     doInstall();
     upLevel(-1);
@@ -141,10 +163,12 @@ function doBuild(clean = true) {
 
 function doPackage() {
     shelljs.cd(DIST_DIR);
-    for (const tgtOS of ['linux', 'macos', 'win']) {
+    for (const tgtOS of ["linux", "macos", "win"]) {
         log(`Packaging the DataDrive CLI for ${tgtOS}`);
         fs.ensureDirSync(`${PKG_DIR}/${tgtOS}-x64`);
-        shelljs.exec(`pkg . -t ${tgtOS}-x64 --output ${PKG_DIR}/${tgtOS}-x64/ddrv`);
+        shelljs.exec(
+            `pkg . -t ${tgtOS}-x64 --output ${PKG_DIR}/${tgtOS}-x64/ddrv`,
+        );
         shelljs.chmod(555, `${PKG_DIR}/${tgtOS}-x64/ddrv*`);
     }
     // Move the README
@@ -153,7 +177,7 @@ function doPackage() {
     shelljs.cd(PKG_DIR);
     // ZIP it up, ready for staging.
     shelljs.exec(`zip -rq ${ZIP_FILE} .`);
-    shelljs.mv(`${ZIP_FILE}`, '..');
+    shelljs.mv(`${ZIP_FILE}`, "..");
 }
 
 function doStage() {
@@ -190,10 +214,9 @@ function ensureProjectDir() {
 ensureProjectDir();
 if (deploy) {
     doDeploy();
-   //log(`Deploy option currently not supported`);
+    //log(`Deploy option currently not supported`);
 } else if (clean) {
     doClean();
 } else if (build) {
     doBuild();
 }
-

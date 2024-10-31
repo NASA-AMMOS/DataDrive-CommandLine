@@ -25,7 +25,7 @@ function getWSClient(ocsClient, options) {
 
 	const wsOptions = {
 		headers: {
-			Cookie: `${DdConsts.SSO_SESSION_KEY_LOOKUP[config.venue]}=${
+			Cookie: `${DdConsts.SSO_SESSION_KEY_LOOKUP[config.authType]}=${
 				ocsClient.token
 			}`,
 		},

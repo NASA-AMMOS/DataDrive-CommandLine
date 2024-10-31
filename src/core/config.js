@@ -25,7 +25,7 @@ function getConfig() {
     try {
         config = JSON.parse(cfgFile);
         config.logdir = config.logdir || DdConstants.DEFAULT_LOG_PATH;
-        config.venue = config.venue || DdConstants.DEFAULT_VENUE;
+        config.authType = config.authType || DdConstants.DEFAULT_AUTH_TYPE;
         return config;
     } catch (e) {
         if (ignoreErrors) return {};

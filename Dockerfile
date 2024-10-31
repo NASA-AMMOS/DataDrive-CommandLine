@@ -10,6 +10,8 @@ RUN apt-get update && \
 WORKDIR /opt/ddrv/src
 COPY src /opt/ddrv/src
 
+COPY ./LICENSE /opt/ddrv/src/
+
 RUN npm config set @gov.nasa.jpl.m2020.cs3:registry=https://cae-artifactory.jpl.nasa.gov:443/artifactory/api/npm/npm-release-local/
 RUN npm config set @gov.nasa.jpl.ammos.ids:registry=https://artifactory.jpl.nasa.gov/artifactory/api/npm/npm-develop-local/
 

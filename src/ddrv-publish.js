@@ -5,7 +5,6 @@ const program = new Command();
 const chokidar = require("chokidar");
 
 const DdConsts = require("./core/DdConstants.js");
-const DdUtils = require("./core/DdUtils.js");
 const DdLogger = require("./core/DdLogger.js").logger;
 const ocs_utils = require("./core/ocs_utils.js");
 const utils = require("./core/utils.js");
@@ -17,14 +16,14 @@ function validateOptions(options = {}) {
 
 	// Does the input dir exist?
 	if (!fs.existsSync(options.sourceDir)) {
-		DdUtils.errorAndExit(
+		DdLogger.errorAndExit(
 			`Can't find source directory ${options.sourceDir}, quitting...`,
 		);
 	}
 
 	if (errors.length) {
 		const outMsg = errors.join("\n");
-		return DdUtils.errorAndExit(outMsg);
+		return DdLogger.errorAndExit(outMsg);
 	}
 
 	return options;
@@ -140,11 +139,11 @@ async function main() {
 		options.packageName,
 	);
 	if (!packageInfo) {
-		DdUtils.errorAndExit(`Cannot find package: ${options.packageName}`);
+		DdLogger.errorAndExit(`Cannot find package: ${options.packageName}`);
 	}
 
 	if (!packageInfo.s3Bucket) {
-		DdUtils.errorAndExit(
+		DdLogger.errorAndExit(
 			`Package ${options.packageName} does not have an s3Bucket configured and thus can't be published to using this tool.`,
 		);
 	}
