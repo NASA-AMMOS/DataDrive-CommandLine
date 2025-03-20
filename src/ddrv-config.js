@@ -24,11 +24,12 @@ function displayExistingConfig() {
         { key: "logDatePattern", text: "Date pattern used for rolling logs" },
         { key: "gzipRollingLogs", text: "Gzip rolling logs" },
         { key: "authType", text: "Authentication type (M20 or MGSS)" },
+        { key: "logLevel", text: "Log Level" },
     ].forEach((row) => {
         t.cell(row.text, config[row.key] || "(undefined)");
     });
     t.newRow();
-    DdLogger.info("\nDataDrive configuration is: \n" + t.printTransposed());
+    console.log("\nDataDrive configuration is: \n" + t.printTransposed());
 }
 
 function writeNewConfig(options) {
@@ -56,6 +57,10 @@ function writeNewConfig(options) {
             options.authType ||
             existingConfig.authType ||
             DdConsts.DEFAULT_AUTH_TYPE,
+        logLevel:
+            options.logLevel ||
+            existingConfig.logLevel ||
+            DdConsts.DEFAULT_LOG_LEVEL,
     };
 
     const cfgPath = utils.getCfgFilepath();
@@ -94,6 +99,15 @@ function main() {
         new Option("-a, --auth-type <auth-type>", "Auth Type").choices([
             "M20",
             "MGSS",
+        ]),
+    );
+
+    program.addOption(
+        new Option("--log-level <log-level>","Set what type of activity is logged ").choices([
+            "debug",
+            "info",
+            "warn",
+            "error",
         ]),
     );
 

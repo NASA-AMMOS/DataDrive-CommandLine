@@ -523,8 +523,6 @@ async function startWsConnection(
     wsClient.on("open", async (_) => {
         if (isRetry) {
             startPlayback(ocsClient, options);
-        } else {
-            await writeCheckpoint(options);
         }
     });
     wsClient.on("message", (msg) => {
@@ -541,7 +539,6 @@ async function startWsConnection(
 
         // Write checkpoint w/ a slightly earlier start time, to correct for the time that this socket may have been
         // dead before firing the "close" event.
-        await writeCheckpoint(options, new Date(Date.now() - 30 * 1000));
         setTimeout((_) => {
             startWsConnection(ocsClient, options, msgValidator, true);
         }, retryInterval);

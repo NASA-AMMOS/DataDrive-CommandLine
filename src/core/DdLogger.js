@@ -72,7 +72,7 @@ if (config.logDatePattern) {
 }
 
 const logger = winston.createLogger({
-    level: "info",
+    level: config.logLevel,
     format: combine(
         label({ label: "DataDrive" }),
         timestamp(),
