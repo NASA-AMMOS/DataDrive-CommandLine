@@ -26,6 +26,7 @@ function getConfig() {
         config = JSON.parse(cfgFile);
         config.logdir = config.logdir || DdConstants.DEFAULT_LOG_PATH;
         config.authType = config.authType || DdConstants.DEFAULT_AUTH_TYPE;
+        config.logLevel = config.logLevel || DdConstants.DEFAULT_LOG_LEVEL;
         return config;
     } catch (e) {
         if (ignoreErrors) return {};
