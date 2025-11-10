@@ -4,6 +4,14 @@ DataDrive Command Line client
 
 This project provides command-line applications to interface with Datadrive/OCS. The DataDrive command line supplements tools within the OCS suite by providing a way of listening to OCS events without having to interface with AWS. It is compatible with CSSO or CAM authentication systems (for OCS and AOCS respectively).
 
+# Archival Notice
+
+This repository has been moved to a new location under [NASA-JPL](https://github.com/nasa-jpl). 
+
+All future development, updates, and issue tracking will take place at: https://github.com/nasa-jpl/DataDrive-CommandLine
+
+This repository is now archived and maintained here for historical reference only.
+
 ## Installation
 
 ### From Github Release
